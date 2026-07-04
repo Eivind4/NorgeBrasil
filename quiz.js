@@ -79,7 +79,6 @@ var sc = {
 var opts = {};
 var selAvatar = null;
 var selEmoji = 'noravatar';
-var selFamily = null;
 var avNames = {
   haaland:'Haaland', odegaard:'Odegaard', nusa:'Nusa', ajer:'Ajer',
   bobb:'Bobb', berge:'Berge', nyland:'Nyland', sorloth:'Sorloth',
@@ -128,53 +127,11 @@ window.syncInput = function(k) {
 };
 
 // -- FAMILY -----------------------------------------------------------
-window.onFamilyChange = function(sel) {
-  if (sel.value === '__new__') {
-    document.getElementById('newFamilyWrap').style.display = 'block';
-    selFamily = null;
-  } else {
-    document.getElementById('newFamilyWrap').style.display = 'none';
-    selFamily = sel.value || null;
-  }
-};
 
-window.confirmNewFamily = function() {
-  var name = document.getElementById('newFamilyName').value.trim();
-  if (!name) { alert('Skriv inn familienavn!'); return; }
-  selFamily = name;
-  // Add to dropdown
-  var sel = document.getElementById('familySelect');
-  var existing = Array.from(sel.options).find(function(o) { return o.value === name; });
-  if (!existing) {
-    var opt = document.createElement('option');
-    opt.value = name;
-    opt.textContent = 'Familie ' + name;
-    sel.insertBefore(opt, sel.querySelector('[value="__new__"]'));
-  }
-  sel.value = name;
-  document.getElementById('newFamilyWrap').style.display = 'none';
-  document.getElementById('familyConfirmed').textContent = 'Familie: ' + name;
-};
 
-// Load existing families into dropdown
-onValue(ref(db, 'brazil_families'), function(snap) {
-  var sel = document.getElementById('familySelect');
-  if (!sel || !snap.exists()) return;
-  var current = sel.value;
-  // Keep first option and __new__ option
-  while (sel.options.length > 2) { sel.remove(1); }
-  var families = [];
-  snap.forEach(function(child) { families.push(child.val()); });
-  families.sort();
-  var newOpt = sel.querySelector('[value="__new__"]');
-  families.forEach(function(f) {
-    var opt = document.createElement('option');
-    opt.value = f;
-    opt.textContent = 'Familie ' + f;
-    sel.insertBefore(opt, newOpt);
-  });
-  if (current) sel.value = current;
-});
+
+
+
 
 // -- SUBMIT -----------------------------------------------------------
 window.submitEntry = async function() {
@@ -196,17 +153,10 @@ window.submitEntry = async function() {
       if (!overwrite) return;
     }
 
-    // Save family
-    if (selFamily) {
-      var famKey = selFamily.toLowerCase().replace(/[^a-z0-9]/g, '_');
-      await set(ref(db, 'brazil_families/' + famKey), selFamily);
-    }
-
     var entry = {
       name: name,
       avatar: selAvatar,
       emoji: selEmoji,
-      family: selFamily || '',
       q1: opts.q1 || '',
       q2: opts.q2 || '',
       q_penalty: opts.q_penalty || '',
@@ -221,7 +171,7 @@ window.submitEntry = async function() {
     await set(ref(db, 'brazil_entries/' + nameKey), entry);
     document.getElementById('successEmoji').textContent = selEmoji;
     document.getElementById('successName').textContent = name.toUpperCase() + ' ER MED!';
-    document.getElementById('successSub').textContent = (selFamily ? 'Familie ' + selFamily + ' - ' : '') + avNames[selAvatar] + ' heier pa deg! Lykke til!';
+    document.getElementById('successSub').textContent = avNames[selAvatar] + ' heier pa deg! Lykke til!';
     document.getElementById('submitBtn').style.display = 'none';
     document.getElementById('successBox').style.display = 'block';
   } catch (err) {
@@ -233,16 +183,13 @@ window.resetForm = function() {
   document.getElementById('playerName').value = '';
   document.querySelectorAll('.av-btn').forEach(function(b) { b.classList.remove('sel'); });
   document.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('sel'); });
-  selAvatar = null; selEmoji = 'noravatar'; selFamily = null;
+  selAvatar = null; selEmoji = 'noravatar';
   ['q3a','q3b','q4','q5','q6','q9','q10','q11','q12','q13'].forEach(function(k) {
     sc[k] = 0;
     var el = document.getElementById(k + '-val');
     if (el) el.value = '0';
   });
   document.getElementById('q7').value = '';
-  document.getElementById('familySelect').value = '';
-  document.getElementById('newFamilyWrap').style.display = 'none';
-  document.getElementById('familyConfirmed').textContent = '';
   document.getElementById('successBox').style.display = 'none';
   document.getElementById('submitBtn').style.display = 'block';
 };
@@ -283,7 +230,16 @@ window.calcAndSaveScores = async function() {
       if (ans.q1 && e.q1 === ans.q1) p += 1;
       if (ans.q2 && e.q2 === ans.q2) p += 1;
       if (ans.q_penalty && e.q_penalty === ans.q_penalty) p += 1;
-      if (ans.q3 && e.q3 === ans.q3) p += 5;
+      // Result scoring: 5pts exact, 2pts if one team's score is correct
+      if (ans.q3 && e.q3 === ans.q3) {
+        p += 5;
+      } else if (ans.q3) {
+        var ansGoals = ans.q3.split('-');
+        var eGoals = (e.q3 || '').split('-');
+        if (ansGoals.length === 2 && eGoals.length === 2) {
+          if (ansGoals[0] === eGoals[0] || ansGoals[1] === eGoals[1]) p += 2;
+        }
+      }
       if (parseInt(e.q4) === parseInt(ans.q4)) p += 2;
       if (parseInt(e.q5) === parseInt(ans.q5)) p += 2;
       if (parseInt(e.q6) === parseInt(ans.q6)) p += 3;
@@ -308,13 +264,6 @@ window.calcAndSaveScores = async function() {
 
 // -- LEADERBOARD -------------------------------------------------------
 var lbMode = 'total';
-
-window.setLbMode = function(mode) {
-  lbMode = mode;
-  document.querySelectorAll('.lb-tab').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('lbt-' + mode).classList.add('active');
-  renderLB();
-};
 
 var avatarSVGs = {
   haaland: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">9</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,24 Q17,12 28,11 Q39,12 40,24 Q36,16 28,16 Q20,16 16,24Z" fill="#D4A355"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
@@ -346,57 +295,10 @@ function renderLB() {
   var list = document.getElementById('lbList');
   var empty = document.getElementById('lbEmpty');
   if (!list) return;
-
   if (!allEntries.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-
-  var rows = [];
-
-  if (lbMode === 'total') {
-    rows = allEntries.slice().sort(function(a,b) { return b.pts - a.pts; });
-    renderRows(list, rows, function(e) { return e.family ? 'Familie ' + e.family : ''; });
-
-  } else if (lbMode === 'best') {
-    // Best per family: top scorer from each family
-    var famMap = {};
-    allEntries.forEach(function(e) {
-      var fam = e.family || '__none__';
-      if (!famMap[fam] || e.pts > famMap[fam].pts) famMap[fam] = e;
-    });
-    rows = Object.values(famMap).sort(function(a,b) { return b.pts - a.pts; });
-    renderRows(list, rows, function(e) { return e.family ? 'Familie ' + e.family : 'Ingen familie'; });
-
-  } else if (lbMode === 'famavg') {
-    // Best family by average
-    var famTotals = {};
-    allEntries.forEach(function(e) {
-      var fam = e.family || '__ingen__';
-      if (!famTotals[fam]) famTotals[fam] = { family: fam, total: 0, count: 0 };
-      famTotals[fam].total += e.pts;
-      famTotals[fam].count += 1;
-    });
-    var famRows = Object.values(famTotals).map(function(f) {
-      return { name: f.family === '__ingen__' ? 'Ingen familie' : 'Familie ' + f.family,
-               pts: Math.round((f.total / f.count) * 10) / 10,
-               count: f.count, avatar: null, emoji: '👨‍👩‍👧' };
-    }).sort(function(a,b) { return b.pts - a.pts; });
-
-    list.innerHTML = famRows.map(function(f, i) {
-      var cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-      var rank = medals[i] || (i+1) + '.';
-      return '<div class="lb-row ' + cls + '">'
-        + '<div class="lb-rank">' + rank + '</div>'
-        + '<div style="font-size:28px;width:48px;text-align:center;">' + f.emoji + '</div>'
-        + '<div style="flex:1;min-width:0;">'
-        + '<div class="lb-name">' + f.name + '</div>'
-        + '<div class="lb-sub">' + f.count + ' deltakere - snitt</div>'
-        + '</div>'
-        + '<div class="lb-pts">' + f.pts + ' pts</div>'
-        + '</div>';
-    }).join('');
-    document.getElementById('lb-info').textContent = 'Live - ' + famRows.length + ' familier';
-    return;
-  }
+  var rows = allEntries.slice().sort(function(a,b) { return b.pts - a.pts; });
+  renderRows(list, rows, function(e) { return avNames[e.avatar] || ''; });
 }
 
 function renderRows(list, rows, subFn) {

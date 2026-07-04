@@ -113,55 +113,125 @@ select:focus{outline:none;border-color:#003087;}
 
   <!-- Rowing animation -->
   <div style="background:white;border:1px solid #e0e0e0;border-radius:14px;padding:10px;overflow:hidden;">
-    <svg width="100%" height="80" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
-      <!-- Water -->
-      <rect x="0" y="55" width="400" height="25" fill="#2255A0" rx="0"/>
-      <path d="M0,55 Q50,50 100,55 Q150,60 200,55 Q250,50 300,55 Q350,60 400,55" fill="none" stroke="rgba(100,180,255,0.5)" stroke-width="1.5">
-        <animate attributeName="d" dur="2s" repeatCount="indefinite"
-          values="M0,55 Q50,50 100,55 Q150,60 200,55 Q250,50 300,55 Q350,60 400,55;
-                  M0,57 Q50,52 100,57 Q150,62 200,57 Q250,52 300,57 Q350,62 400,57;
-                  M0,55 Q50,50 100,55 Q150,60 200,55 Q250,50 300,55 Q350,60 400,55"/>
+    <svg width="100%" height="90" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">
+      <!-- Water background -->
+      <rect width="400" height="90" fill="#1a4a7a"/>
+      <!-- Water ripples -->
+      <path d="M0,45 Q100,38 200,45 Q300,52 400,45" fill="none" stroke="rgba(100,180,255,0.25)" stroke-width="1">
+        <animate attributeName="d" dur="3s" repeatCount="indefinite"
+          values="M0,45 Q100,38 200,45 Q300,52 400,45;M0,47 Q100,40 200,47 Q300,54 400,47;M0,45 Q100,38 200,45 Q300,52 400,45"/>
       </path>
-      <!-- Boat -->
+      <!-- Wake lines behind boat -->
+      <path d="M20,45 Q30,40 40,45 Q30,50 20,45" fill="rgba(255,255,255,0.12)">
+        <animateTransform attributeName="transform" type="translate" dur="0.6s" repeatCount="indefinite"
+          values="0,0;-8,0;-16,0" additive="sum"/>
+        <animate attributeName="opacity" dur="0.6s" repeatCount="indefinite" values="0.3;0.1;0"/>
+      </path>
+      <!-- Boat hull (top-down: long thin ellipse) -->
+      <ellipse cx="210" cy="45" rx="155" ry="11" fill="#8B6A34"/>
+      <ellipse cx="210" cy="45" rx="150" ry="8" fill="#C8943A"/>
+      <!-- Boat centerline -->
+      <line x1="60" y1="45" x2="360" y2="45" stroke="#8B5020" stroke-width="1" opacity="0.5"/>
+
+      <!-- ROWERS top-down: head circle + body rect + oars on both sides -->
+      <!-- All oars animate together at same cadence -->
+
+      <!-- Rower 1 at x=110 -->
       <g>
-        <animateTransform attributeName="transform" type="translate" dur="0.3s" repeatCount="indefinite"
-          values="0,0; 0,-1; 0,0; 0,1; 0,0"/>
-        <ellipse cx="200" cy="55" rx="130" ry="6" fill="#8B6A34"/>
-        <ellipse cx="200" cy="53" rx="128" ry="5" fill="#C8943A"/>
-        <!-- Rower 1 -->
-        <circle cx="120" cy="44" r="7" fill="#F5DEB3"/>
-        <rect x="114" y="51" width="12" height="10" rx="2" fill="#EF3340"/>
-        <line x1="108" y1="48" x2="80" y2="52" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
-          <animate attributeName="x2" dur="0.6s" repeatCount="indefinite" values="80;95;80"/>
-          <animate attributeName="y2" dur="0.6s" repeatCount="indefinite" values="52;48;52"/>
+        <!-- Left oar -->
+        <line x1="110" y1="37" x2="110" y2="15" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,110,37;20,110,37;-20,110,37" additive="sum"/>
         </line>
-        <!-- Rower 2 -->
-        <circle cx="160" cy="44" r="7" fill="#F5CBA7"/>
-        <rect x="154" y="51" width="12" height="10" rx="2" fill="#EF3340"/>
-        <line x1="148" y1="48" x2="120" y2="52" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
-          <animate attributeName="x2" dur="0.6s" repeatCount="indefinite" values="120;135;120" begin="0.15s"/>
-          <animate attributeName="y2" dur="0.6s" repeatCount="indefinite" values="52;48;52" begin="0.15s"/>
+        <ellipse cx="110" cy="13" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(-20,110,37)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,110,37;20,110,37;-20,110,37" additive="sum"/>
+        </ellipse>
+        <!-- Right oar -->
+        <line x1="110" y1="53" x2="110" y2="75" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,110,53;-20,110,53;20,110,53" additive="sum"/>
         </line>
-        <!-- Rower 3 -->
-        <circle cx="230" cy="44" r="7" fill="#F5DEB3"/>
-        <rect x="224" y="51" width="12" height="10" rx="2" fill="#EF3340"/>
-        <line x1="218" y1="48" x2="190" y2="52" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
-          <animate attributeName="x2" dur="0.6s" repeatCount="indefinite" values="190;205;190" begin="0.3s"/>
-          <animate attributeName="y2" dur="0.6s" repeatCount="indefinite" values="52;48;52" begin="0.3s"/>
-        </line>
-        <!-- Rower 4 -->
-        <circle cx="270" cy="44" r="7" fill="#8B5A2B"/>
-        <rect x="264" y="51" width="12" height="10" rx="2" fill="#EF3340"/>
-        <line x1="258" y1="48" x2="230" y2="52" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
-          <animate attributeName="x2" dur="0.6s" repeatCount="indefinite" values="230;245;230" begin="0.45s"/>
-          <animate attributeName="y2" dur="0.6s" repeatCount="indefinite" values="52;48;52" begin="0.45s"/>
-        </line>
-        <!-- Norwegian flag on boat -->
-        <rect x="195" y="25" width="2" height="20" fill="#555"/>
-        <rect x="197" y="25" width="14" height="10" fill="#EF3340"/>
-        <rect x="197" y="29" width="14" height="2" fill="white"/>
-        <rect x="201" y="25" width="2" height="10" fill="white"/>
+        <ellipse cx="110" cy="77" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(20,110,53)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,110,53;-20,110,53;20,110,53" additive="sum"/>
+        </ellipse>
+        <!-- Body -->
+        <rect x="103" y="40" width="14" height="10" rx="2" fill="#EF3340"/>
+        <!-- Head -->
+        <circle cx="110" cy="37" r="6" fill="#F5DEB3"/>
       </g>
+
+      <!-- Rower 2 at x=170 -->
+      <g>
+        <line x1="170" y1="37" x2="170" y2="15" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,170,37;20,170,37;-20,170,37" additive="sum"/>
+        </line>
+        <ellipse cx="170" cy="13" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(-20,170,37)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,170,37;20,170,37;-20,170,37" additive="sum"/>
+        </ellipse>
+        <line x1="170" y1="53" x2="170" y2="75" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,170,53;-20,170,53;20,170,53" additive="sum"/>
+        </line>
+        <ellipse cx="170" cy="77" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(20,170,53)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,170,53;-20,170,53;20,170,53" additive="sum"/>
+        </ellipse>
+        <rect x="163" y="40" width="14" height="10" rx="2" fill="#EF3340"/>
+        <circle cx="170" cy="37" r="6" fill="#F5CBA7"/>
+      </g>
+
+      <!-- Rower 3 at x=230 -->
+      <g>
+        <line x1="230" y1="37" x2="230" y2="15" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,230,37;20,230,37;-20,230,37" additive="sum"/>
+        </line>
+        <ellipse cx="230" cy="13" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(-20,230,37)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,230,37;20,230,37;-20,230,37" additive="sum"/>
+        </ellipse>
+        <line x1="230" y1="53" x2="230" y2="75" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,230,53;-20,230,53;20,230,53" additive="sum"/>
+        </line>
+        <ellipse cx="230" cy="77" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(20,230,53)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,230,53;-20,230,53;20,230,53" additive="sum"/>
+        </ellipse>
+        <rect x="223" y="40" width="14" height="10" rx="2" fill="#EF3340"/>
+        <circle cx="230" cy="37" r="6" fill="#8B5A2B"/>
+      </g>
+
+      <!-- Rower 4 at x=290 -->
+      <g>
+        <line x1="290" y1="37" x2="290" y2="15" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,290,37;20,290,37;-20,290,37" additive="sum"/>
+        </line>
+        <ellipse cx="290" cy="13" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(-20,290,37)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="-20,290,37;20,290,37;-20,290,37" additive="sum"/>
+        </ellipse>
+        <line x1="290" y1="53" x2="290" y2="75" stroke="#8B6A34" stroke-width="2.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,290,53;-20,290,53;20,290,53" additive="sum"/>
+        </line>
+        <ellipse cx="290" cy="77" rx="5" ry="2.5" fill="#8B6A34" transform="rotate(20,290,53)">
+          <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
+            values="20,290,53;-20,290,53;20,290,53" additive="sum"/>
+        </ellipse>
+        <rect x="283" y="40" width="14" height="10" rx="2" fill="#EF3340"/>
+        <circle cx="290" cy="37" r="6" fill="#F5DEB3"/>
+      </g>
+
+      <!-- Norwegian flag at front of boat -->
+      <rect x="350" y="38" width="12" height="8" fill="#EF3340" rx="1"/>
+      <rect x="350" y="41" width="12" height="2" fill="white"/>
+      <rect x="353" y="38" width="2" height="8" fill="white"/>
     </svg>
   </div>
 
@@ -199,20 +269,7 @@ select:focus{outline:none;border-color:#003087;}
     </div>
 
     <div class="card">
-      <div class="card-title">👨‍👩‍👧 Velg familie</div>
-      <select id="familySelect" onchange="onFamilyChange(this)">
-        <option value="">-- Ingen familie / velg --</option>
-        <option value="__new__">+ Opprett ny familie</option>
-      </select>
-      <div id="newFamilyWrap" style="display:none;margin-top:8px;display:flex;flex-direction:column;gap:6px;">
-        <input type="text" id="newFamilyName" placeholder="Familienavn..." maxlength="30">
-        <button class="submit-btn" style="padding:10px;font-size:14px;" onclick="confirmNewFamily()">BEKREFT FAMILIE</button>
-      </div>
-      <div class="family-confirmed" id="familyConfirmed"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">🧡 Velg din spiller!</div>
+      <div class="card-title">🧡 Velg din spiller!</div>iller!</div>
       <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">🇳🇴 NORSKE SPILLERE</div>
       <div class="av-grid">
         <button class="av-btn" data-av="haaland" data-emoji="⚽" onclick="selAv(this)">
@@ -355,29 +412,7 @@ select:focus{outline:none;border-color:#003087;}
         </select>
       </div>
 
-      <div class="q-block">
-        <div class="q-lbl">🤾 Antall innkast (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
-        <div class="sc-wrap">
-          <button class="sc-btn" onclick="adjSc('q12',-1)">-</button>
-          <input class="sc-input" type="number" id="q12-val" value="0" min="0" max="100" onchange="syncInput('q12')" oninput="syncInput('q12')">
-          <button class="sc-btn" onclick="adjSc('q12',1)">+</button>
-          <span class="sc-label">innkast</span>
-        </div>
-        <div class="hint">Hint: vanligvis mellom 20 og 50</div>
-        <div class="pct-note">5 pts ved eksakt - avtar med % avstand fra fasit</div>
-      </div>
 
-      <div class="q-block">
-        <div class="q-lbl">🥅 Antall skudd på mål (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
-        <div class="sc-wrap">
-          <button class="sc-btn" onclick="adjSc('q13',-1)">-</button>
-          <input class="sc-input" type="number" id="q13-val" value="0" min="0" max="50" onchange="syncInput('q13')" oninput="syncInput('q13')">
-          <button class="sc-btn" onclick="adjSc('q13',1)">+</button>
-          <span class="sc-label">skudd</span>
-        </div>
-        <div class="hint">Hint: vanligvis mellom 4 og 14</div>
-        <div class="pct-note">5 pts ved eksakt - avtar med % avstand fra fasit</div>
-      </div>
 
       <div class="section-div">📊 PROSENTBASERT - opptil 5 poeng</div>
 
@@ -414,6 +449,30 @@ select:focus{outline:none;border-color:#003087;}
           <span class="sc-label">corners</span>
         </div>
         <div class="hint">Hint: vanligvis mellom 5 og 14</div>
+        <div class="pct-note">5 pts ved eksakt - avtar med % avstand fra fasit</div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-lbl">🤾 Antall innkast (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="sc-wrap">
+          <button class="sc-btn" onclick="adjSc('q12',-1)">-</button>
+          <input class="sc-input" type="number" id="q12-val" value="0" min="0" max="100" onchange="syncInput('q12')" oninput="syncInput('q12')">
+          <button class="sc-btn" onclick="adjSc('q12',1)">+</button>
+          <span class="sc-label">innkast</span>
+        </div>
+        <div class="hint">Hint: vanligvis mellom 20 og 50</div>
+        <div class="pct-note">5 pts ved eksakt - avtar med % avstand fra fasit</div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-lbl">🥅 Antall skudd på mål (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="sc-wrap">
+          <button class="sc-btn" onclick="adjSc('q13',-1)">-</button>
+          <input class="sc-input" type="number" id="q13-val" value="0" min="0" max="50" onchange="syncInput('q13')" oninput="syncInput('q13')">
+          <button class="sc-btn" onclick="adjSc('q13',1)">+</button>
+          <span class="sc-label">skudd</span>
+        </div>
+        <div class="hint">Hint: vanligvis mellom 4 og 14</div>
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand fra fasit</div>
       </div>
 
@@ -460,11 +519,7 @@ select:focus{outline:none;border-color:#003087;}
 
     <div class="card">
       <div class="card-title" style="margin-bottom:8px;">🏆 POENGTAVLE</div>
-      <div class="lb-tabs">
-        <div class="lb-tab active" id="lbt-total" onclick="setLbMode('total')">🏅 TOTALT</div>
-        <div class="lb-tab" id="lbt-best" onclick="setLbMode('best')">👑 BESTE I FAMILIE</div>
-        <div class="lb-tab" id="lbt-famavg" onclick="setLbMode('famavg')">🏠 BESTE FAMILIE</div>
-      </div>
+
       <div style="font-size:11px;color:#999;margin-bottom:12px;" id="lb-info">Live</div>
       <div id="lbList"></div>
       <div id="lbEmpty" style="text-align:center;padding:24px;color:#aaa;font-size:14px;">Ingen registreringer ennå</div>
