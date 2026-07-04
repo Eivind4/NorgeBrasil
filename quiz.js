@@ -1,0 +1,425 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, update } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwnU6ZEYUTrKCc0Afru7JPjvRif-g_gbA",
+  authDomain: "norgeelfenbenkysten.firebaseapp.com",
+  databaseURL: "https://norgeelfenbenkysten-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "norgeelfenbenkysten",
+  storageBucket: "norgeelfenbenkysten.firebasestorage.app",
+  messagingSenderId: "950269622806",
+  appId: "1:950269622806:web:97e5ce88e223f783fc5337"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+
+// Deadline: 22:00 on 5 July 2026
+var DEADLINE = new Date('2026-07-05T22:00:00');
+window._manualLocked = false;
+
+function isLocked() {
+  return window._manualLocked || new Date() >= DEADLINE;
+}
+
+function applyLockState() {
+  var locked = isLocked();
+  var lockBanner = document.getElementById('lockBanner');
+  var cdBox = document.getElementById('countdownBox');
+  var submitBtn = document.getElementById('submitBtn');
+  if (lockBanner) lockBanner.style.display = locked ? 'block' : 'none';
+  if (cdBox) cdBox.style.display = locked ? 'none' : 'block';
+  if (submitBtn) submitBtn.disabled = locked;
+}
+
+// Countdown timer
+function tickCd() {
+  var diff = DEADLINE - new Date();
+  if (diff <= 0) { applyLockState(); return; }
+  var d = Math.floor(diff / 86400000);
+  var h = Math.floor((diff % 86400000) / 3600000);
+  var m = Math.floor((diff % 3600000) / 60000);
+  var s = Math.floor((diff % 60000) / 1000);
+  var pad = function(n) { return String(n).padStart(2,'0'); };
+  var dEl = document.getElementById('cd-d');
+  var hEl = document.getElementById('cd-h');
+  var mEl = document.getElementById('cd-m');
+  var sEl = document.getElementById('cd-s');
+  if (dEl) dEl.textContent = pad(d);
+  if (hEl) hEl.textContent = pad(h);
+  if (mEl) mEl.textContent = pad(m);
+  if (sEl) sEl.textContent = pad(s);
+  setTimeout(tickCd, 1000);
+}
+tickCd();
+applyLockState();
+
+// Status
+onValue(ref(db, 'brazil_entries'), function(snap) {
+  var count = snap.exists() ? snap.size : 0;
+  var el = document.getElementById('fbStatus');
+  if (el) el.innerHTML = 'Firebase koplet - ' + count + ' deltakere';
+});
+
+// State
+var sc = {
+  q3a:0, q3b:0,  // result
+  q4:0,           // goals 1st half
+  q5:0,           // yellow cards
+  q6:0,           // ro mentions
+  q9:0,           // corners
+  q10:0,          // frispark
+  q11:0,          // langpasninger
+  q12:0,          // innkast
+  q13:0,          // shots on goal
+  a3a:0, a3b:0,
+  a4:0, a5:0, a6:0, a9:0, a10:0, a11:0, a12:0, a13:0
+};
+var opts = {};
+var selAvatar = null;
+var selEmoji = 'noravatar';
+var selFamily = null;
+var avNames = {
+  haaland:'Haaland', odegaard:'Odegaard', nusa:'Nusa', ajer:'Ajer',
+  bobb:'Bobb', berge:'Berge', nyland:'Nyland', sorloth:'Sorloth',
+  vinicius:'Vinicius Jr', rodrygo:'Rodrygo'
+};
+
+// -- TAB --------------------------------------------------------------
+window.showTab = function(t) {
+  document.querySelectorAll('.tab').forEach(function(x) { x.classList.remove('active'); });
+  document.querySelectorAll('.pane').forEach(function(x) { x.classList.remove('active'); });
+  document.getElementById('tab-' + t).classList.add('active');
+  document.getElementById('pane-' + t).classList.add('active');
+  if (t === 'stilling') renderLB();
+};
+
+// -- AVATAR -----------------------------------------------------------
+window.selAv = function(btn) {
+  document.querySelectorAll('.av-btn').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  selAvatar = btn.dataset.av;
+  selEmoji = btn.dataset.emoji;
+};
+
+// -- OPTIONS ----------------------------------------------------------
+window.selOpt = function(qid, btn, val) {
+  document.querySelectorAll('#' + qid + ' .opt').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  opts[qid] = val;
+};
+
+// -- STEPPER + INPUT --------------------------------------------------
+window.adjSc = function(k, d) {
+  sc[k] = Math.max(0, Math.min(500, (sc[k] || 0) + d));
+  var el = document.getElementById(k + '-val');
+  if (el) el.value = sc[k];
+};
+
+window.syncInput = function(k) {
+  var el = document.getElementById(k + '-val');
+  if (!el) return;
+  var v = parseInt(el.value);
+  if (isNaN(v) || v < 0) v = 0;
+  if (v > 500) v = 500;
+  sc[k] = v;
+  el.value = v;
+};
+
+// -- FAMILY -----------------------------------------------------------
+window.onFamilyChange = function(sel) {
+  if (sel.value === '__new__') {
+    document.getElementById('newFamilyWrap').style.display = 'block';
+    selFamily = null;
+  } else {
+    document.getElementById('newFamilyWrap').style.display = 'none';
+    selFamily = sel.value || null;
+  }
+};
+
+window.confirmNewFamily = function() {
+  var name = document.getElementById('newFamilyName').value.trim();
+  if (!name) { alert('Skriv inn familienavn!'); return; }
+  selFamily = name;
+  // Add to dropdown
+  var sel = document.getElementById('familySelect');
+  var existing = Array.from(sel.options).find(function(o) { return o.value === name; });
+  if (!existing) {
+    var opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = 'Familie ' + name;
+    sel.insertBefore(opt, sel.querySelector('[value="__new__"]'));
+  }
+  sel.value = name;
+  document.getElementById('newFamilyWrap').style.display = 'none';
+  document.getElementById('familyConfirmed').textContent = 'Familie: ' + name;
+};
+
+// Load existing families into dropdown
+onValue(ref(db, 'brazil_families'), function(snap) {
+  var sel = document.getElementById('familySelect');
+  if (!sel || !snap.exists()) return;
+  var current = sel.value;
+  // Keep first option and __new__ option
+  while (sel.options.length > 2) { sel.remove(1); }
+  var families = [];
+  snap.forEach(function(child) { families.push(child.val()); });
+  families.sort();
+  var newOpt = sel.querySelector('[value="__new__"]');
+  families.forEach(function(f) {
+    var opt = document.createElement('option');
+    opt.value = f;
+    opt.textContent = 'Familie ' + f;
+    sel.insertBefore(opt, newOpt);
+  });
+  if (current) sel.value = current;
+});
+
+// -- SUBMIT -----------------------------------------------------------
+window.submitEntry = async function() {
+  if (isLocked()) { alert('Beklager - registreringsfristen er passert!'); return; }
+  var name = document.getElementById('playerName').value.trim();
+  if (!name) { alert('Skriv inn navn forst!'); return; }
+  if (!selAvatar) { alert('Velg en spiller!'); return; }
+  if (!opts.q1) { alert('Hvem tror du vinner?'); return; }
+
+  // Sync all manual inputs
+  ['q9','q10','q11','q12','q13','q4','q5','q6'].forEach(function(k) { window.syncInput(k); });
+
+  var nameKey = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+  try {
+    var existing = await get(ref(db, 'brazil_entries/' + nameKey));
+    if (existing.exists()) {
+      var overwrite = confirm(name + ' er allerede registrert! Vil du overskrive svaret?');
+      if (!overwrite) return;
+    }
+
+    // Save family
+    if (selFamily) {
+      var famKey = selFamily.toLowerCase().replace(/[^a-z0-9]/g, '_');
+      await set(ref(db, 'brazil_families/' + famKey), selFamily);
+    }
+
+    var entry = {
+      name: name,
+      avatar: selAvatar,
+      emoji: selEmoji,
+      family: selFamily || '',
+      q1: opts.q1 || '',
+      q2: opts.q2 || '',
+      q_penalty: opts.q_penalty || '',
+      q3: sc.q3a + '-' + sc.q3b,
+      q4: sc.q4, q5: sc.q5, q6: sc.q6,
+      q7: document.getElementById('q7').value || '',
+      q8: opts.q8 || '',
+      q9: sc.q9, q10: sc.q10, q11: sc.q11, q12: sc.q12, q13: sc.q13,
+      pts: 0, ts: Date.now()
+    };
+
+    await set(ref(db, 'brazil_entries/' + nameKey), entry);
+    document.getElementById('successEmoji').textContent = selEmoji;
+    document.getElementById('successName').textContent = name.toUpperCase() + ' ER MED!';
+    document.getElementById('successSub').textContent = (selFamily ? 'Familie ' + selFamily + ' - ' : '') + avNames[selAvatar] + ' heier pa deg! Lykke til!';
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('successBox').style.display = 'block';
+  } catch (err) {
+    alert('Feil ved lagring: ' + err.message);
+  }
+};
+
+window.resetForm = function() {
+  document.getElementById('playerName').value = '';
+  document.querySelectorAll('.av-btn').forEach(function(b) { b.classList.remove('sel'); });
+  document.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('sel'); });
+  selAvatar = null; selEmoji = 'noravatar'; selFamily = null;
+  ['q3a','q3b','q4','q5','q6','q9','q10','q11','q12','q13'].forEach(function(k) {
+    sc[k] = 0;
+    var el = document.getElementById(k + '-val');
+    if (el) el.value = '0';
+  });
+  document.getElementById('q7').value = '';
+  document.getElementById('familySelect').value = '';
+  document.getElementById('newFamilyWrap').style.display = 'none';
+  document.getElementById('familyConfirmed').textContent = '';
+  document.getElementById('successBox').style.display = 'none';
+  document.getElementById('submitBtn').style.display = 'block';
+};
+
+// -- PERCENTAGE SCORING ------------------------------------------------
+// For corners, frispark, langpasninger: 5pts * max(0, 1 - |guess-actual|/actual)
+function pctScore(guess, actual, maxPts) {
+  if (actual === 0) return guess === 0 ? maxPts : 0;
+  var pct = Math.max(0, 1 - Math.abs(guess - actual) / actual);
+  return Math.round(pct * maxPts * 10) / 10; // 1 decimal
+}
+
+// -- CALC SCORES -------------------------------------------------------
+window.calcAndSaveScores = async function() {
+  ['a9','a10','a11','a12','a13','a4','a5','a6'].forEach(function(k) {
+    var el = document.getElementById(k + '-val');
+    if (el) { var v = parseInt(el.value); sc[k] = isNaN(v) ? 0 : v; }
+  });
+
+  var ans = {
+    q1: opts.a1 || '', q2: opts.a2 || '',
+    q3: sc.a3a + '-' + sc.a3b,
+    q4: sc.a4, q5: sc.a5, q6: sc.a6,
+    q7: document.getElementById('a7').value || '',
+    q8: opts.a8 || '',
+    q_penalty: opts.a_penalty || '',
+    q9: sc.a9, q10: sc.a10, q11: sc.a11, q12: sc.a12, q13: sc.a13
+  };
+  await set(ref(db, 'brazil_answers'), ans);
+
+  try {
+    var snap = await get(ref(db, 'brazil_entries'));
+    if (!snap.exists()) { alert('Ingen deltakere funnet.'); return; }
+    var updates = {};
+    snap.forEach(function(child) {
+      var e = child.val();
+      var p = 0;
+      if (ans.q1 && e.q1 === ans.q1) p += 1;
+      if (ans.q2 && e.q2 === ans.q2) p += 1;
+      if (ans.q_penalty && e.q_penalty === ans.q_penalty) p += 1;
+      if (ans.q3 && e.q3 === ans.q3) p += 5;
+      if (parseInt(e.q4) === parseInt(ans.q4)) p += 2;
+      if (parseInt(e.q5) === parseInt(ans.q5)) p += 2;
+      if (parseInt(e.q6) === parseInt(ans.q6)) p += 3;
+      if (ans.q7 && e.q7 && e.q7 === ans.q7) p += 3;
+      if (ans.q8 && e.q8 === ans.q8) p += 2;
+      // Percentage scoring for q9 corners, q10 frispark, q11 langpasninger
+      p += pctScore(parseInt(e.q9), parseInt(ans.q9), 5);
+      p += pctScore(parseInt(e.q10), parseInt(ans.q10), 5);
+      p += pctScore(parseInt(e.q11), parseInt(ans.q11), 5);
+      // Percentage scoring for innkast and shots
+      p += pctScore(parseInt(e.q12), parseInt(ans.q12), 5);
+      p += pctScore(parseInt(e.q13), parseInt(ans.q13), 5);
+      updates['brazil_entries/' + child.key + '/pts'] = Math.round(p * 10) / 10;
+    });
+    await update(ref(db), updates);
+    alert('Poeng oppdatert for alle!');
+    renderLB();
+  } catch (err) {
+    alert('Feil: ' + err.message);
+  }
+};
+
+// -- LEADERBOARD -------------------------------------------------------
+var lbMode = 'total';
+
+window.setLbMode = function(mode) {
+  lbMode = mode;
+  document.querySelectorAll('.lb-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('lbt-' + mode).classList.add('active');
+  renderLB();
+};
+
+var avatarSVGs = {
+  haaland: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">9</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,24 Q17,12 28,11 Q39,12 40,24 Q36,16 28,16 Q20,16 16,24Z" fill="#D4A355"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  odegaard: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">8</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5CBA7"/><path d="M16,26 Q16,11 28,10 Q40,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#8B6A34"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  nusa: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">11</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#8B5A2B"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  ajer: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">6</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,18 28,18 Q19,18 16,26Z" fill="#C8943A"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  bobb: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">22</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#6B3A1F"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  berge: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">23</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#333"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  nyland: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#FFD700"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#003087" font-family="Arial,sans-serif">1</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#FFD700"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#FFD700"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#555"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  bobb: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">22</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#6B3A1F"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  ajer: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">6</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,18 28,18 Q19,18 16,26Z" fill="#C8943A"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  sorloth: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">20</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5CBA7"/><path d="M16,26 Q16,11 28,10 Q40,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#8B6A34"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  vinicius: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#009C3B"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#FFDF00" font-family="Arial,sans-serif">7</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#8B5A2B"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  rodrygo: '<svg width="44" height="54" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#009C3B"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#FFDF00" font-family="Arial,sans-serif">11</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#6B3A1F"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>'
+};
+
+var medals = ['🥇','🥈','🥉'];
+var allEntries = [];
+
+onValue(ref(db, 'brazil_entries'), function(snap) {
+  allEntries = [];
+  if (snap.exists()) {
+    snap.forEach(function(child) { allEntries.push(child.val()); });
+  }
+  renderLB();
+});
+
+function renderLB() {
+  var list = document.getElementById('lbList');
+  var empty = document.getElementById('lbEmpty');
+  if (!list) return;
+
+  if (!allEntries.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  var rows = [];
+
+  if (lbMode === 'total') {
+    rows = allEntries.slice().sort(function(a,b) { return b.pts - a.pts; });
+    renderRows(list, rows, function(e) { return e.family ? 'Familie ' + e.family : ''; });
+
+  } else if (lbMode === 'best') {
+    // Best per family: top scorer from each family
+    var famMap = {};
+    allEntries.forEach(function(e) {
+      var fam = e.family || '__none__';
+      if (!famMap[fam] || e.pts > famMap[fam].pts) famMap[fam] = e;
+    });
+    rows = Object.values(famMap).sort(function(a,b) { return b.pts - a.pts; });
+    renderRows(list, rows, function(e) { return e.family ? 'Familie ' + e.family : 'Ingen familie'; });
+
+  } else if (lbMode === 'famavg') {
+    // Best family by average
+    var famTotals = {};
+    allEntries.forEach(function(e) {
+      var fam = e.family || '__ingen__';
+      if (!famTotals[fam]) famTotals[fam] = { family: fam, total: 0, count: 0 };
+      famTotals[fam].total += e.pts;
+      famTotals[fam].count += 1;
+    });
+    var famRows = Object.values(famTotals).map(function(f) {
+      return { name: f.family === '__ingen__' ? 'Ingen familie' : 'Familie ' + f.family,
+               pts: Math.round((f.total / f.count) * 10) / 10,
+               count: f.count, avatar: null, emoji: '👨‍👩‍👧' };
+    }).sort(function(a,b) { return b.pts - a.pts; });
+
+    list.innerHTML = famRows.map(function(f, i) {
+      var cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      var rank = medals[i] || (i+1) + '.';
+      return '<div class="lb-row ' + cls + '">'
+        + '<div class="lb-rank">' + rank + '</div>'
+        + '<div style="font-size:28px;width:48px;text-align:center;">' + f.emoji + '</div>'
+        + '<div style="flex:1;min-width:0;">'
+        + '<div class="lb-name">' + f.name + '</div>'
+        + '<div class="lb-sub">' + f.count + ' deltakere - snitt</div>'
+        + '</div>'
+        + '<div class="lb-pts">' + f.pts + ' pts</div>'
+        + '</div>';
+    }).join('');
+    document.getElementById('lb-info').textContent = 'Live - ' + famRows.length + ' familier';
+    return;
+  }
+}
+
+function renderRows(list, rows, subFn) {
+  var maxPts = 42;
+  list.innerHTML = rows.map(function(e, i) {
+    var cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    var rank = medals[i] || (i+1) + '.';
+    var bar = Math.min(100, Math.round((e.pts / maxPts) * 100));
+    var avatarHtml = (e.avatar && avatarSVGs[e.avatar])
+      ? avatarSVGs[e.avatar]
+      : '<div style="font-size:26px;text-align:center;">' + (e.emoji || '⚽') + '</div>';
+    return '<div class="lb-row ' + cls + '">'
+      + '<div class="lb-rank">' + rank + '</div>'
+      + '<div style="width:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">' + avatarHtml + '</div>'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div class="lb-name">' + e.name + '</div>'
+      + '<div class="lb-sub">' + subFn(e) + '</div>'
+      + '<div style="background:#e0e0e0;border-radius:4px;height:5px;margin-top:4px;overflow:hidden;">'
+      + '<div style="background:#003087;height:5px;width:' + bar + '%;border-radius:4px;"></div>'
+      + '</div></div>'
+      + '<div class="lb-pts">' + e.pts + ' pts</div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('lb-info').textContent =
+    'Live - ' + rows.length + ' deltakere - ' + new Date().toLocaleTimeString('no-NO');
+}
