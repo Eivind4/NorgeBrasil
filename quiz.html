@@ -112,75 +112,75 @@ select:focus{outline:none;border-color:#003087;}
 
       <!-- Each rower: fixed shaft (vertical line), blade (rect) rotates at far end only -->
 
-      <!-- Rower 1 at x=105 -->
+      <!-- Rowers top-down: WHOLE oar rotates around oarlock point -->
+
+      <!-- Rower 1 x=105 -->
       <g transform="translate(105,45)">
-        <!-- Top oar: shaft + blade rotates around the oarlock (y=-13) -->
-        <line x1="0" y1="-13" x2="0" y2="-29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="-30 0 -29; 30 0 -29; -30 0 -29"/>
-          <rect x="-5" y="-34" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="-30 0 -13; 30 0 -13; -30 0 -13"/>
+          <line x1="0" y1="-13" x2="0" y2="-34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="-39" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
-        <!-- Bottom oar -->
-        <line x1="0" y1="13" x2="0" y2="29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="30 0 29; -30 0 29; 30 0 29"/>
-          <rect x="-5" y="28" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="30 0 13; -30 0 13; 30 0 13"/>
+          <line x1="0" y1="13" x2="0" y2="34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="32" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
         <rect x="-7" y="-6" width="14" height="12" rx="2" fill="#EF3340"/>
         <circle cx="0" cy="-9" r="6" fill="#F5DEB3"/>
       </g>
 
-      <!-- Rower 2 at x=165 -->
+      <!-- Rower 2 x=165 -->
       <g transform="translate(165,45)">
-        <line x1="0" y1="-13" x2="0" y2="-29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="-30 0 -29; 30 0 -29; -30 0 -29"/>
-          <rect x="-5" y="-34" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="-30 0 -13; 30 0 -13; -30 0 -13"/>
+          <line x1="0" y1="-13" x2="0" y2="-34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="-39" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
-        <line x1="0" y1="13" x2="0" y2="29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="30 0 29; -30 0 29; 30 0 29"/>
-          <rect x="-5" y="28" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="30 0 13; -30 0 13; 30 0 13"/>
+          <line x1="0" y1="13" x2="0" y2="34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="32" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
         <rect x="-7" y="-6" width="14" height="12" rx="2" fill="#EF3340"/>
         <circle cx="0" cy="-9" r="6" fill="#F5CBA7"/>
       </g>
 
-      <!-- Rower 3 at x=235 -->
+      <!-- Rower 3 x=235 -->
       <g transform="translate(235,45)">
-        <line x1="0" y1="-13" x2="0" y2="-29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="-30 0 -29; 30 0 -29; -30 0 -29"/>
-          <rect x="-5" y="-34" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="-30 0 -13; 30 0 -13; -30 0 -13"/>
+          <line x1="0" y1="-13" x2="0" y2="-34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="-39" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
-        <line x1="0" y1="13" x2="0" y2="29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="30 0 29; -30 0 29; 30 0 29"/>
-          <rect x="-5" y="28" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="30 0 13; -30 0 13; 30 0 13"/>
+          <line x1="0" y1="13" x2="0" y2="34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="32" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
         <rect x="-7" y="-6" width="14" height="12" rx="2" fill="#EF3340"/>
         <circle cx="0" cy="-9" r="6" fill="#8B5A2B"/>
       </g>
 
-      <!-- Rower 4 at x=295 -->
+      <!-- Rower 4 x=295 -->
       <g transform="translate(295,45)">
-        <line x1="0" y1="-13" x2="0" y2="-29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="-30 0 -29; 30 0 -29; -30 0 -29"/>
-          <rect x="-5" y="-34" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="-30 0 -13; 30 0 -13; -30 0 -13"/>
+          <line x1="0" y1="-13" x2="0" y2="-34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="-39" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
-        <line x1="0" y1="13" x2="0" y2="29" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
         <g>
           <animateTransform attributeName="transform" type="rotate" dur="0.8s" repeatCount="indefinite"
-            values="30 0 29; -30 0 29; 30 0 29"/>
-          <rect x="-5" y="28" width="10" height="6" rx="1.5" fill="#7A5020"/>
+            values="30 0 13; -30 0 13; 30 0 13"/>
+          <line x1="0" y1="13" x2="0" y2="34" stroke="#9A7040" stroke-width="2.5" stroke-linecap="round"/>
+          <rect x="-6" y="32" width="12" height="7" rx="3" fill="#5A3010"/>
         </g>
         <rect x="-7" y="-6" width="14" height="12" rx="2" fill="#EF3340"/>
         <circle cx="0" cy="-9" r="6" fill="#F5DEB3"/>
@@ -232,46 +232,46 @@ select:focus{outline:none;border-color:#003087;}
       <div class="card-title">Velg din spiller!</div>
       <div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;">NORSKE SPILLERE</div>
       <div class="av-grid">
-        <button class="av-btn" data-av="haaland" data-emoji="9" onclick="selAv(this)">
+        <button class="av-btn" data-av="haaland" data-emoji="⚽" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">9</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,24 Q17,12 28,11 Q39,12 40,24 Q36,16 28,16 Q20,16 16,24Z" fill="#D4A355"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Haaland #9</div>
         </button>
-        <button class="av-btn" data-av="odegaard" data-emoji="8" onclick="selAv(this)">
+        <button class="av-btn" data-av="odegaard" data-emoji="🎯" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">8</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5CBA7"/><path d="M16,26 Q16,11 28,10 Q40,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#8B6A34"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Odegaard #8</div>
         </button>
-        <button class="av-btn" data-av="nusa" data-emoji="11" onclick="selAv(this)">
+        <button class="av-btn" data-av="nusa" data-emoji="⚡" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">11</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#8B5A2B"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Nusa #11</div>
         </button>
-        <button class="av-btn" data-av="nyland" data-emoji="1" onclick="selAv(this)">
+        <button class="av-btn" data-av="nyland" data-emoji="🧤" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#FFD700"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#003087" font-family="Arial,sans-serif">1</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#FFD700"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#FFD700"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#555"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Nyland #1</div>
         </button>
-        <button class="av-btn" data-av="berge" data-emoji="23" onclick="selAv(this)">
+        <button class="av-btn" data-av="berge" data-emoji="💪" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">23</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#333"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Berge #23</div>
         </button>
-        <button class="av-btn" data-av="sorloth" data-emoji="20" onclick="selAv(this)">
+        <button class="av-btn" data-av="sorloth" data-emoji="🦅" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">20</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5CBA7"/><path d="M16,26 Q16,11 28,10 Q40,11 40,26 Q37,17 28,17 Q19,17 16,26Z" fill="#8B6A34"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Sorloth #20</div>
         </button>
-        <button class="av-btn" data-av="bobb" data-emoji="22" onclick="selAv(this)">
+        <button class="av-btn" data-av="bobb" data-emoji="🔥" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">22</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#6B3A1F"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Bobb #22</div>
         </button>
-        <button class="av-btn" data-av="ajer" data-emoji="6" onclick="selAv(this)">
+        <button class="av-btn" data-av="ajer" data-emoji="🛡️" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#EF3340"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial,sans-serif">6</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#EF3340"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#F5DEB3"/><path d="M16,26 Q15,11 28,10 Q41,11 40,26 Q37,18 28,18 Q19,18 16,26Z" fill="#C8943A"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#5D4037"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Ajer #6</div>
         </button>
       </div>
       <div style="font-size:11px;font-weight:700;color:#888;margin:10px 0 6px;">BRASILIANSKE SPILLERE</div>
       <div class="av-grid">
-        <button class="av-btn bra" data-av="vinicius" data-emoji="7" onclick="selAv(this)">
+        <button class="av-btn bra" data-av="vinicius" data-emoji="🌟" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#009C3B"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#FFDF00" font-family="Arial,sans-serif">7</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#8B5A2B"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Vinicius #7</div>
         </button>
-        <button class="av-btn bra" data-av="rodrygo" data-emoji="11br" onclick="selAv(this)">
+        <button class="av-btn bra" data-av="rodrygo" data-emoji="🔥" onclick="selAv(this)">
           <svg width="52" height="64" viewBox="0 0 56 80" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="42" width="36" height="34" rx="5" fill="#009C3B"/><text x="28" y="57" text-anchor="middle" font-size="10" font-weight="900" fill="#FFDF00" font-family="Arial,sans-serif">11</text><rect x="2" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="45" y="45" width="9" height="24" rx="3" fill="#009C3B"/><rect x="16" y="74" width="9" height="5" rx="2" fill="#222"/><rect x="31" y="74" width="9" height="5" rx="2" fill="#222"/><ellipse cx="28" cy="24" rx="13" ry="15" fill="#6B3A1F"/><path d="M16,27 Q15,11 28,10 Q41,11 40,27 Q37,17 28,17 Q19,17 16,27Z" fill="#1a0a00"/><ellipse cx="23" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><ellipse cx="33" cy="25" rx="2.2" ry="1.8" fill="#3E2723"/><path d="M24,31 Q28,34 32,31" fill="none" stroke="#C07060" stroke-width="1.2" stroke-linecap="round"/></svg>
           <div class="av-name">Rodrygo #11</div>
         </button>
@@ -281,33 +281,33 @@ select:focus{outline:none;border-color:#003087;}
     <div class="card">
       <div class="card-title">Tippeskjema</div>
 
-      <div class="section-div">ENKLE - 1 poeng</div>
+      <div class="section-div">🟢 ENKLE — 1 poeng</div>
       <div class="q-block">
-        <div class="q-lbl">Hvem vinner? <span class="pts p1">1 poeng</span></div>
+        <div class="q-lbl">🏆 Hvem vinner? <span class="pts p1">1 poeng</span></div>
         <div class="opts" id="q1">
-          <button class="opt" onclick="selOpt('q1',this,'Norge')">Norge</button>
-          <button class="opt" onclick="selOpt('q1',this,'Brasil')">Brasil</button>
+          <button class="opt" onclick="selOpt('q1',this,'Norge')">🇳🇴 Norge</button>
+          <button class="opt" onclick="selOpt('q1',this,'Brasil')">🇧🇷 Brasil</button>
         </div>
-        <div class="hint">Uavgjort = straffespark. Tipp hvem som vinner!</div>
+        <div class="hint">⚠️ Uavgjort = straffespark. Tipp hvem som vinner til slutt!</div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Scorer Haaland? <span class="pts p1">1 poeng</span></div>
+        <div class="q-lbl">⚽ Scorer Haaland i spilletiden? <span class="pts p1">1 poeng</span></div>
         <div class="opts" id="q2">
-          <button class="opt" onclick="selOpt('q2',this,'Ja')">Ja!</button>
-          <button class="opt" onclick="selOpt('q2',this,'Nei')">Nei</button>
+          <button class="opt" onclick="selOpt('q2',this,'Ja')">✅ Ja!</button>
+          <button class="opt" onclick="selOpt('q2',this,'Nei')">❌ Nei</button>
         </div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Far Norge straffe? <span class="pts p1">1 poeng</span></div>
+        <div class="q-lbl">🟢 Får Norge straffe (f.eks. ved riving i trøyen)? <span class="pts p1">1 poeng</span></div>
         <div class="opts" id="q_penalty">
-          <button class="opt" onclick="selOpt('q_penalty',this,'Ja')">Ja!</button>
-          <button class="opt" onclick="selOpt('q_penalty',this,'Nei')">Nei</button>
+          <button class="opt" onclick="selOpt('q_penalty',this,'Ja')">✅ Ja!</button>
+          <button class="opt" onclick="selOpt('q_penalty',this,'Nei')">❌ Nei</button>
         </div>
       </div>
 
-      <div class="section-div">MIDDELS - 2 poeng</div>
+      <div class="section-div">🟡 MIDDELS — 2 poeng</div>
       <div class="q-block">
-        <div class="q-lbl">Mal i forste omgang? <span class="pts p2">2 poeng</span></div>
+        <div class="q-lbl">⚡ Mål i første omgang? <span class="pts p2">2 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q4',-1)">-</button>
           <input class="sc-input" type="number" id="q4-val" value="0" min="0" max="20" onchange="syncInput('q4')" oninput="syncInput('q4')">
@@ -316,7 +316,7 @@ select:focus{outline:none;border-color:#003087;}
         </div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Gule kort? <span class="pts p2">2 poeng</span></div>
+        <div class="q-lbl">🟨 Gule kort? <span class="pts p2">2 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q5',-1)">-</button>
           <input class="sc-input" type="number" id="q5-val" value="0" min="0" max="20" onchange="syncInput('q5')" oninput="syncInput('q5')">
@@ -325,18 +325,18 @@ select:focus{outline:none;border-color:#003087;}
         </div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Rodt kort i kampen? <span class="pts p2">2 poeng</span></div>
+        <div class="q-lbl">🔴 Rødt kort i kampen? <span class="pts p2">2 poeng</span></div>
         <div class="opts" id="q8">
-          <button class="opt" onclick="selOpt('q8',this,'Nei')">Ingen</button>
-          <button class="opt" onclick="selOpt('q8',this,'Norge')">Norge</button>
-          <button class="opt" onclick="selOpt('q8',this,'Brasil')">Brasil</button>
-          <button class="opt" onclick="selOpt('q8',this,'Begge')">Begge</button>
+          <button class="opt" onclick="selOpt('q8',this,'Nei')">✅ Ingen</button>
+          <button class="opt" onclick="selOpt('q8',this,'Norge')">🇳🇴 Norge</button>
+          <button class="opt" onclick="selOpt('q8',this,'Brasil')">🇧🇷 Brasil</button>
+          <button class="opt" onclick="selOpt('q8',this,'Begge')">😱 Begge</button>
         </div>
       </div>
 
-      <div class="section-div">VANSKELIG - 3 poeng</div>
+      <div class="section-div">🔴 VANSKELIG — 3 poeng</div>
       <div class="q-block">
-        <div class="q-lbl">Antall ganger kommentatorene nevner "Ro"? <span class="pts p3">3 poeng</span></div>
+        <div class="q-lbl">🚣 Antall ganger kommentatorene nevner "Ro" i spilletiden? <span class="pts p3">3 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q6',-1)">-</button>
           <input class="sc-input" type="number" id="q6-val" value="0" min="0" max="100" onchange="syncInput('q6')" oninput="syncInput('q6')">
@@ -345,10 +345,10 @@ select:focus{outline:none;border-color:#003087;}
         </div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Minutt for kampens forste mal? <span class="pts p3">3 poeng</span></div>
+        <div class="q-lbl">⏱️ Minutt for kampens første mål i spilletid? <span class="pts p3">3 poeng</span></div>
         <select id="q7" style="margin-top:6px;">
           <option value="">-- Velg intervall --</option>
-          <option value="0">Ingen mal</option>
+          <option value="0">Ingen mål</option>
           <option value="1">1-10 min</option>
           <option value="11">11-20 min</option>
           <option value="21">21-30 min</option>
@@ -364,9 +364,9 @@ select:focus{outline:none;border-color:#003087;}
         </select>
       </div>
 
-      <div class="section-div">PROSENTBASERT - opptil 5 poeng</div>
+      <div class="section-div">📊 PROSENTBASERT — opptil 5 poeng</div>
       <div class="q-block">
-        <div class="q-lbl">Antall frispark (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="q-lbl">🎯 Antall frispark (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q10',-1)">-</button>
           <input class="sc-input" type="number" id="q10-val" value="0" min="0" max="100" onchange="syncInput('q10')" oninput="syncInput('q10')">
@@ -377,7 +377,7 @@ select:focus{outline:none;border-color:#003087;}
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand</div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Antall Flo-pasninger (langpasninger) (Norge)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="q-lbl">📏 Antall Flo-pasninger (langpasninger) (Norge)? <span class="pts ppct">0-5 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q11',-1)">-</button>
           <input class="sc-input" type="number" id="q11-val" value="0" min="0" max="200" onchange="syncInput('q11')" oninput="syncInput('q11')">
@@ -388,7 +388,7 @@ select:focus{outline:none;border-color:#003087;}
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand</div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Antall corners totalt? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="q-lbl">🌟 Antall corners totalt? <span class="pts ppct">0-5 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q9',-1)">-</button>
           <input class="sc-input" type="number" id="q9-val" value="0" min="0" max="50" onchange="syncInput('q9')" oninput="syncInput('q9')">
@@ -399,7 +399,7 @@ select:focus{outline:none;border-color:#003087;}
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand</div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Antall innkast (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="q-lbl">🤾 Antall innkast (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q12',-1)">-</button>
           <input class="sc-input" type="number" id="q12-val" value="0" min="0" max="100" onchange="syncInput('q12')" oninput="syncInput('q12')">
@@ -410,7 +410,7 @@ select:focus{outline:none;border-color:#003087;}
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand</div>
       </div>
       <div class="q-block">
-        <div class="q-lbl">Antall skudd pa mal (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
+        <div class="q-lbl">🥅 Antall skudd på mål (begge lag)? <span class="pts ppct">0-5 poeng</span></div>
         <div class="sc-wrap">
           <button class="sc-btn" onclick="adjSc('q13',-1)">-</button>
           <input class="sc-input" type="number" id="q13-val" value="0" min="0" max="50" onchange="syncInput('q13')" oninput="syncInput('q13')">
@@ -421,9 +421,9 @@ select:focus{outline:none;border-color:#003087;}
         <div class="pct-note">5 pts ved eksakt - avtar med % avstand</div>
       </div>
 
-      <div class="section-div">HOVED - 5 poeng</div>
+      <div class="section-div">🌟 HOVED — 5 poeng</div>
       <div class="q-block">
-        <div class="q-lbl">Resultat ved full tid (etter 90 min)? <span class="pts p5">5 pts eksakt / 2 pts ett lag riktig</span></div>
+        <div class="q-lbl">📊 Resultat ved full tid (etter 90 min)? <span class="pts p5">5 pts eksakt / 2 pts ett lag riktig</span></div>
         <div class="result-wrap">
           <div class="result-team">
             <div class="result-team-name">NORGE</div>
@@ -490,15 +490,15 @@ select:focus{outline:none;border-color:#003087;}
       <div style="display:flex;flex-direction:column;">
 
         <div class="admin-row">
-          <span class="admin-lbl">Hvem vinner?</span>
+          <span class="admin-lbl">🏆 Hvem vinner?</span>
           <div class="opts" id="a1" style="margin:0;">
-            <button class="opt" onclick="selOpt('a1',this,'Norge')">Norge</button>
-            <button class="opt" onclick="selOpt('a1',this,'Brasil')">Brasil</button>
+            <button class="opt" onclick="selOpt('a1',this,'Norge')">🇳🇴 Norge</button>
+            <button class="opt" onclick="selOpt('a1',this,'Brasil')">🇧🇷 Brasil</button>
           </div>
         </div>
 
         <div class="admin-row">
-          <span class="admin-lbl">Resultat (full tid)</span>
+          <span class="admin-lbl">📊 Resultat (full tid)</span>
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
             <span style="font-size:11px;color:#888;font-weight:700;">NOR</span>
             <button class="sc-btn" onclick="adjScSpan('a3a',-1)">-</button>
@@ -512,13 +512,13 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Haaland scorer?</span>
+        <div class="admin-row"><span class="admin-lbl">⚽ ⚽ Scorer Haaland?</span>
           <div class="opts" id="a2" style="margin:0;"><button class="opt" onclick="selOpt('a2',this,'Ja')">Ja</button><button class="opt" onclick="selOpt('a2',this,'Nei')">Nei</button></div></div>
 
-        <div class="admin-row"><span class="admin-lbl">Norge far straffe?</span>
+        <div class="admin-row"><span class="admin-lbl">🟢 🟢 Straffe?</span>
           <div class="opts" id="a_penalty" style="margin:0;"><button class="opt" onclick="selOpt('a_penalty',this,'Ja')">Ja</button><button class="opt" onclick="selOpt('a_penalty',this,'Nei')">Nei</button></div></div>
 
-        <div class="admin-row"><span class="admin-lbl">Mal 1. omgang</span>
+        <div class="admin-row"><span class="admin-lbl">⚡ Mål 1. omgang</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a4',-1)">-</button>
             <input class="sc-input" type="number" id="a4-val" value="0" min="0" onchange="syncInput('a4')" oninput="syncInput('a4')">
@@ -526,7 +526,7 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Gule kort</span>
+        <div class="admin-row"><span class="admin-lbl">🟨 Gule kort</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a5',-1)">-</button>
             <input class="sc-input" type="number" id="a5-val" value="0" min="0" onchange="syncInput('a5')" oninput="syncInput('a5')">
@@ -534,16 +534,16 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Rodt kort?</span>
+        <div class="admin-row"><span class="admin-lbl">🔴 Rødt kort?</span>
           <div class="opts" id="a8" style="margin:0;">
-            <button class="opt" onclick="selOpt('a8',this,'Nei')">Ingen</button>
-            <button class="opt" onclick="selOpt('a8',this,'Norge')">Norge</button>
-            <button class="opt" onclick="selOpt('a8',this,'Brasil')">Brasil</button>
-            <button class="opt" onclick="selOpt('a8',this,'Begge')">Begge</button>
+            <button class="opt" onclick="selOpt('a8',this,'Nei')">✅ Ingen</button>
+            <button class="opt" onclick="selOpt('a8',this,'Norge')">🇳🇴 Norge</button>
+            <button class="opt" onclick="selOpt('a8',this,'Brasil')">🇧🇷 Brasil</button>
+            <button class="opt" onclick="selOpt('a8',this,'Begge')">😱 Begge</button>
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">"Ro" nevnt</span>
+        <div class="admin-row"><span class="admin-lbl">🚣 "Ro" nevnt</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a6',-1)">-</button>
             <input class="sc-input" type="number" id="a6-val" value="0" min="0" onchange="syncInput('a6')" oninput="syncInput('a6')">
@@ -551,10 +551,10 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Kampens 1. mal</span>
+        <div class="admin-row"><span class="admin-lbl">⏱️ Kampens 1. mål</span>
           <select id="a7" style="padding:8px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:700;border:2px solid #ddd;border-radius:8px;background:#f8f8f8;color:#111;cursor:pointer;">
             <option value="">-- Velg --</option>
-            <option value="0">Ingen mal</option>
+            <option value="0">Ingen mål</option>
             <option value="1">1-10 min</option>
             <option value="11">11-20 min</option>
             <option value="21">21-30 min</option>
@@ -570,7 +570,7 @@ select:focus{outline:none;border-color:#003087;}
           </select>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Frispark</span>
+        <div class="admin-row"><span class="admin-lbl">🎯 Frispark</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a10',-1)">-</button>
             <input class="sc-input" type="number" id="a10-val" value="0" min="0" onchange="syncInput('a10')" oninput="syncInput('a10')">
@@ -578,7 +578,7 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Flo-pasninger (NOR)</span>
+        <div class="admin-row"><span class="admin-lbl">📏 Flo-pasninger (NOR)</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a11',-1)">-</button>
             <input class="sc-input" type="number" id="a11-val" value="0" min="0" onchange="syncInput('a11')" oninput="syncInput('a11')">
@@ -586,7 +586,7 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Corners</span>
+        <div class="admin-row"><span class="admin-lbl">🌟 Corners</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a9',-1)">-</button>
             <input class="sc-input" type="number" id="a9-val" value="0" min="0" onchange="syncInput('a9')" oninput="syncInput('a9')">
@@ -594,7 +594,7 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Innkast</span>
+        <div class="admin-row"><span class="admin-lbl">🤾 Innkast</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a12',-1)">-</button>
             <input class="sc-input" type="number" id="a12-val" value="0" min="0" onchange="syncInput('a12')" oninput="syncInput('a12')">
@@ -602,7 +602,7 @@ select:focus{outline:none;border-color:#003087;}
           </div>
         </div>
 
-        <div class="admin-row"><span class="admin-lbl">Skudd pa mal</span>
+        <div class="admin-row"><span class="admin-lbl">🥅 Skudd på mål</span>
           <div class="sc-wrap" style="margin:0;">
             <button class="sc-btn" onclick="adjSc('a13',-1)">-</button>
             <input class="sc-input" type="number" id="a13-val" value="0" min="0" onchange="syncInput('a13')" oninput="syncInput('a13')">
