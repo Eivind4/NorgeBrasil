@@ -55,6 +55,14 @@ function tickCd() {
 tickCd();
 applyLockState();
 
+// Load saved answers for animation on page load
+onValue(ref(db, 'brazil_answers'), function(snap) {
+  if (snap.exists()) {
+    var ans = snap.val();
+    if (ans && ans.q3) { showResultAnimation(ans.q3); _lastAnswerKey = ans.q3; }
+  }
+});
+
 // Status
 onValue(ref(db, 'brazil_entries'), function(snap) {
   var count = snap.exists() ? snap.size : 0;
@@ -256,6 +264,8 @@ window.calcAndSaveScores = async function() {
     });
     await update(ref(db), updates);
     alert('Poeng oppdatert for alle!');
+    showResultAnimation(ans.q3);
+    _lastAnswerKey = ans.q3;
     renderLB();
   } catch (err) {
     alert('Feil: ' + err.message);
@@ -291,6 +301,102 @@ onValue(ref(db, 'brazil_entries'), function(snap) {
   renderLB();
 });
 
+
+// ---- RESULT ANIMATION -----------------------------------------------
+function showResultAnimation(answerKey) {
+  var el = document.getElementById('resultAnim');
+  if (!el) return;
+
+  var nor = parseInt((answerKey || '').split('-')[0]);
+  var bra = parseInt((answerKey || '').split('-')[1]);
+  var hasResult = !isNaN(nor) && !isNaN(bra) && answerKey && answerKey !== '0-0' || (nor === 0 && bra === 0 && answerKey === '0-0');
+
+  if (!hasResult || !answerKey) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+
+  if (nor > bra) {
+    // NORWAY WINS - celebration with many boats
+    el.innerHTML = '<svg width="100%" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect width="400" height="120" fill="#1a4a7a"/>'
+      + '<text x="200" y="22" text-anchor="middle" font-size="14" font-weight="900" fill="#FFD700" font-family="Arial,sans-serif">NORGE VINNER! 🎉</text>'
+      // Confetti
+      + '<rect x="30" y="10" width="6" height="10" fill="#EF3340" rx="1"><animate attributeName="y" dur="1.2s" repeatCount="indefinite" values="10;90;10"/><animate attributeName="opacity" dur="1.2s" repeatCount="indefinite" values="1;0.3;1"/></rect>'
+      + '<rect x="80" y="5" width="6" height="10" fill="#FFD700" rx="1"><animate attributeName="y" dur="1.0s" repeatCount="indefinite" values="5;85;5" begin="0.2s"/><animate attributeName="opacity" dur="1.0s" repeatCount="indefinite" values="1;0.3;1" begin="0.2s"/></rect>'
+      + '<rect x="140" y="8" width="6" height="10" fill="white" rx="1"><animate attributeName="y" dur="1.4s" repeatCount="indefinite" values="8;88;8" begin="0.4s"/><animate attributeName="opacity" dur="1.4s" repeatCount="indefinite" values="1;0.3;1" begin="0.4s"/></rect>'
+      + '<rect x="200" y="4" width="6" height="10" fill="#EF3340" rx="1"><animate attributeName="y" dur="1.1s" repeatCount="indefinite" values="4;84;4" begin="0.1s"/></rect>'
+      + '<rect x="260" y="7" width="6" height="10" fill="#FFD700" rx="1"><animate attributeName="y" dur="1.3s" repeatCount="indefinite" values="7;87;7" begin="0.3s"/></rect>'
+      + '<rect x="320" y="6" width="6" height="10" fill="white" rx="1"><animate attributeName="y" dur="0.9s" repeatCount="indefinite" values="6;86;6" begin="0.5s"/></rect>'
+      + '<rect x="360" y="9" width="6" height="10" fill="#EF3340" rx="1"><animate attributeName="y" dur="1.2s" repeatCount="indefinite" values="9;89;9" begin="0.6s"/></rect>'
+      // Boat 1
+      + '<g><animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite" values="0,0;-380,0"/>'
+      + '<ellipse cx="340" cy="80" rx="50" ry="7" fill="#C8943A"/>'
+      + '<circle cx="310" cy="73" r="5" fill="#F5DEB3"/><rect x="304" y="75" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="330" cy="73" r="5" fill="#F5CBA7"/><rect x="324" y="75" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="350" cy="73" r="5" fill="#F5DEB3"/><rect x="344" y="75" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="370" cy="73" r="5" fill="#8B5A2B"/><rect x="364" y="75" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<rect x="336" y="62" width="10" height="7" fill="#EF3340" rx="1"/><rect x="336" y="65" width="10" height="1.5" fill="white"/><rect x="339" y="62" width="1.5" height="7" fill="white"/><rect x="339.3" y="62" width="0.7" height="7" fill="#003087"/>'
+      + '</g>'
+      // Boat 2 offset
+      + '<g><animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite" values="120,0;-260,0"/>'
+      + '<ellipse cx="340" cy="98" rx="50" ry="7" fill="#C8943A"/>'
+      + '<circle cx="310" cy="91" r="5" fill="#F5CBA7"/><rect x="304" y="93" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="330" cy="91" r="5" fill="#F5DEB3"/><rect x="324" y="93" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="350" cy="91" r="5" fill="#F5DEB3"/><rect x="344" y="93" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="370" cy="91" r="5" fill="#F5CBA7"/><rect x="364" y="93" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '</g>'
+      + '</svg>';
+  } else if (bra > nor) {
+    // BRAZIL WINS - samba dancer + sinking boat
+    el.innerHTML = '<svg width="100%" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect width="400" height="120" fill="#1a4a7a"/>'
+      + '<text x="200" y="18" text-anchor="middle" font-size="13" font-weight="900" fill="#FFDF00" font-family="Arial,sans-serif">BRASIL VINNER 🇧🇷</text>'
+      // Samba dancer (simple stick figure dancing)
+      + '<g transform="translate(60,30)">'
+      + '<circle cx="0" cy="0" r="10" fill="#8B5A2B"/>'
+      + '<line x1="0" y1="10" x2="0" y2="45" stroke="#009C3B" stroke-width="4"/>'
+      + '<line x1="0" y1="20" x2="-18" y2="10" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="0.5s" repeatCount="indefinite" values="-20,0,20;20,0,20;-20,0,20" additive="sum"/></line>'
+      + '<line x1="0" y1="20" x2="18" y2="30" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="0.5s" repeatCount="indefinite" values="20,0,20;-20,0,20;20,0,20" additive="sum"/></line>'
+      + '<line x1="0" y1="45" x2="-12" y2="70" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="0.5s" repeatCount="indefinite" values="15,0,45;-15,0,45;15,0,45" additive="sum"/></line>'
+      + '<line x1="0" y1="45" x2="12" y2="70" stroke="#8B5A2B" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="0.5s" repeatCount="indefinite" values="-15,0,45;15,0,45;-15,0,45" additive="sum"/></line>'
+      + '<text x="0" y="-14" text-anchor="middle" font-size="14">🎺</text>'
+      + '</g>'
+      // Sinking boat (tilted, going down)
+      + '<g transform="translate(220,40)">'
+      + '<animateTransform attributeName="transform" type="rotate" dur="3s" repeatCount="indefinite" values="0,80,30;15,80,30;0,80,30" additive="sum"/>'
+      + '<ellipse cx="80" cy="60" rx="70" ry="8" fill="#8B6A34" opacity="0.8"/>'
+      + '<ellipse cx="80" cy="58" rx="68" ry="6" fill="#C8943A" opacity="0.8"/>'
+      + '<circle cx="50" cy="50" r="5" fill="#F5DEB3"/><rect x="44" y="52" width="11" height="8" rx="2" fill="#EF3340" opacity="0.7"/>'
+      + '<circle cx="80" cy="50" r="5" fill="#F5CBA7"/><rect x="74" y="52" width="11" height="8" rx="2" fill="#EF3340" opacity="0.7"/>'
+      + '<circle cx="110" cy="50" r="5" fill="#F5DEB3"/><rect x="104" y="52" width="11" height="8" rx="2" fill="#EF3340" opacity="0.7"/>'
+      + '<animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="1;0.4;1"/>'
+      + '</g>'
+      // Water splashes
+      + '<text x="230" y="110" font-size="16" opacity="0.7"><animate attributeName="opacity" dur="1s" repeatCount="indefinite" values="0.3;1;0.3"/></text>'
+      + '<text x="290" y="108" font-size="14" opacity="0.6"><animate attributeName="opacity" dur="1.3s" repeatCount="indefinite" values="1;0.2;1"/></text>'
+      + '</svg>';
+  } else {
+    // DRAW - nervous animation
+    el.innerHTML = '<svg width="100%" height="90" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect width="400" height="90" fill="#2a2a2a"/>'
+      + '<text x="200" y="22" text-anchor="middle" font-size="13" font-weight="900" fill="#FFD700" font-family="Arial,sans-serif">UAVGJORT... 😬 STRAFFER?</text>'
+      // Nervous rower shaking
+      + '<g>'
+      + '<animateTransform attributeName="transform" type="translate" dur="0.1s" repeatCount="indefinite" values="0,0;2,0;-2,0;1,0;-1,0;0,0"/>'
+      + '<ellipse cx="200" cy="55" rx="50" ry="6" fill="#C8943A"/>'
+      + '<circle cx="175" cy="48" r="5" fill="#F5DEB3"/><rect x="169" y="50" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="200" cy="48" r="5" fill="#F5CBA7"/><rect x="194" y="50" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '<circle cx="225" cy="48" r="5" fill="#F5DEB3"/><rect x="219" y="50" width="11" height="8" rx="2" fill="#EF3340"/>'
+      + '</g>'
+      // Sweat drops
+      + '<text x="160" y="42" font-size="12"><animate attributeName="opacity" dur="0.8s" repeatCount="indefinite" values="0;1;0"/></text>'
+      + '<text x="240" y="38" font-size="12"><animate attributeName="opacity" dur="1.1s" repeatCount="indefinite" values="1;0;1"/></text>'
+      + '<text x="200" y="80" text-anchor="middle" font-size="11" fill="#aaa" font-family="Arial,sans-serif">Venter pa resultat...</text>'
+      + '</svg>';
+  }
+}
+
+// Call after scores calculated and after entries load
+var _lastAnswerKey = '';
 function renderLB() {
   var list = document.getElementById('lbList');
   var empty = document.getElementById('lbEmpty');
