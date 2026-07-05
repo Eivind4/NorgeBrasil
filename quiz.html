@@ -345,6 +345,17 @@ select:focus{outline:none;border-color:#003087;}
         </div>
       </div>
       <div class="q-block">
+        <div class="q-lbl">🏆 Antall ganger kommentatorene nevner VM i 1998 i spilletiden? <span class="pts p3">3 poeng</span></div>
+        <div class="sc-wrap">
+          <button class="sc-btn" onclick="adjSc('q14',-1)">-</button>
+          <input class="sc-input" type="number" id="q14-val" value="0" min="0" max="50" onchange="syncInput('q14')" oninput="syncInput('q14')">
+          <button class="sc-btn" onclick="adjSc('q14',1)">+</button>
+          <span class="sc-label">ganger</span>
+        </div>
+        <div class="hint">Norge slo Brasil 2-1 i VM 1998! 🇳🇴</div>
+      </div>
+
+      <div class="q-block">
         <div class="q-lbl">⏱️ Minutt for kampens første mål i spilletid? <span class="pts p3">3 poeng</span></div>
         <select id="q7" style="margin-top:6px;">
           <option value="">-- Velg intervall --</option>
@@ -540,6 +551,14 @@ select:focus{outline:none;border-color:#003087;}
             <button class="opt" onclick="selOpt('a8',this,'Norge')">🇳🇴 Norge</button>
             <button class="opt" onclick="selOpt('a8',this,'Brasil')">🇧🇷 Brasil</button>
             <button class="opt" onclick="selOpt('a8',this,'Begge')">😱 Begge</button>
+          </div>
+        </div>
+
+        <div class="admin-row"><span class="admin-lbl">🏆 VM 1998 nevnt</span>
+          <div class="sc-wrap" style="margin:0;">
+            <button class="sc-btn" onclick="adjSc('a14',-1)">-</button>
+            <input class="sc-input" type="number" id="a14-val" value="0" min="0" onchange="syncInput('a14')" oninput="syncInput('a14')">
+            <button class="sc-btn" onclick="adjSc('a14',1)">+</button>
           </div>
         </div>
 

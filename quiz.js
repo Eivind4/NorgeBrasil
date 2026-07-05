@@ -57,9 +57,9 @@ onValue(ref(db, 'brazil_entries'), function(snap) {
 
 // State
 var sc = {
-  q3a:0, q3b:0, q4:0, q5:0, q6:0,
+  q3a:0, q3b:0, q4:0, q5:0, q6:0, q14:0,
   q9:0, q10:0, q11:0, q12:0, q13:0,
-  a3a:0, a3b:0, a4:0, a5:0, a6:0,
+  a3a:0, a3b:0, a4:0, a5:0, a6:0, a14:0,
   a9:0, a10:0, a11:0, a12:0, a13:0
 };
 var opts = {};
@@ -137,7 +137,7 @@ window.submitEntry = async function() {
   if (!selAvatar) { alert('Velg en spiller!'); return; }
   if (!opts.q1) { alert('Hvem tror du vinner?'); return; }
 
-  ['q9','q10','q11','q12','q13','q4','q5','q6'].forEach(function(k) { window.syncInput(k); });
+  ['q9','q10','q11','q12','q13','q4','q5','q6','q14'].forEach(function(k) { window.syncInput(k); });
 
   var nameKey = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
   try {
@@ -153,11 +153,11 @@ window.submitEntry = async function() {
       q4: sc.q4, q5: sc.q5, q6: sc.q6,
       q7: document.getElementById('q7').value || '',
       q8: opts.q8 || '',
-      q9: sc.q9, q10: sc.q10, q11: sc.q11, q12: sc.q12, q13: sc.q13,
+      q9: sc.q9, q10: sc.q10, q11: sc.q11, q12: sc.q12, q13: sc.q13, q14: sc.q14,
       pts: 0, ts: Date.now()
     };
     await set(ref(db, 'brazil_entries/' + nameKey), entry);
-    document.getElementById('successEmoji').textContent = '#' + selEmoji;
+    document.getElementById('successEmoji').textContent = selEmoji;
     document.getElementById('successName').textContent = name.toUpperCase() + ' ER MED!';
     document.getElementById('successSub').textContent = avNames[selAvatar] + ' heier pa deg! Lykke til!';
     document.getElementById('submitBtn').style.display = 'none';
@@ -173,7 +173,7 @@ window.resetForm = function() {
   document.querySelectorAll('.av-btn').forEach(function(b) { b.classList.remove('sel'); });
   document.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('sel'); });
   selAvatar = null; selEmoji = '';
-  ['q3a','q3b','q4','q5','q6','q9','q10','q11','q12','q13'].forEach(function(k) {
+  ['q3a','q3b','q4','q5','q6','q9','q10','q11','q12','q13','q14'].forEach(function(k) {
     sc[k] = 0;
     var el = document.getElementById(k + '-val');
     if (el) { if (el.tagName === 'INPUT') el.value = '0'; else el.textContent = '0'; }
@@ -193,7 +193,7 @@ function pctScore(guess, actual, maxPts) {
 
 // Calculate and save scores
 window.calcAndSaveScores = async function() {
-  ['a4','a5','a6','a9','a10','a11','a12','a13'].forEach(function(k) { window.syncInput(k); });
+  ['a4','a5','a6','a9','a10','a11','a12','a13','a14'].forEach(function(k) { window.syncInput(k); });
 
   var ans = {
     q1: opts.a1 || '', q2: opts.a2 || '', q_penalty: opts.a_penalty || '',
@@ -201,7 +201,7 @@ window.calcAndSaveScores = async function() {
     q4: sc.a4, q5: sc.a5, q6: sc.a6,
     q7: document.getElementById('a7').value || '',
     q8: opts.a8 || '',
-    q9: sc.a9, q10: sc.a10, q11: sc.a11, q12: sc.a12, q13: sc.a13
+    q9: sc.a9, q10: sc.a10, q11: sc.a11, q12: sc.a12, q13: sc.a13, q14: sc.a14
   };
   await set(ref(db, 'brazil_answers'), ans);
 
@@ -226,6 +226,7 @@ window.calcAndSaveScores = async function() {
       if (parseInt(e.q5) === parseInt(ans.q5)) p += 2;
       if (ans.q8 && e.q8 === ans.q8) p += 2;
       if (ans.q6 && parseInt(e.q6) === parseInt(ans.q6)) p += 3;
+      if (ans.q14 !== undefined && parseInt(e.q14) === parseInt(ans.q14)) p += 3;
       if (ans.q7 && e.q7 && e.q7 === ans.q7) p += 3;
       p += pctScore(parseInt(e.q9),  parseInt(ans.q9),  5);
       p += pctScore(parseInt(e.q10), parseInt(ans.q10), 5);
@@ -264,7 +265,7 @@ onValue(ref(db, 'brazil_answers'), function(snap) {
     }
   }
   // Number inputs
-  var numFields = {a4:'q4',a5:'q5',a6:'q6',a9:'q9',a10:'q10',a11:'q11',a12:'q12',a13:'q13'};
+  var numFields = {a4:'q4',a5:'q5',a6:'q6',a9:'q9',a10:'q10',a11:'q11',a12:'q12',a13:'q13',a14:'q14'};
   Object.keys(numFields).forEach(function(ak) {
     var qk = numFields[ak];
     var val = ans[qk];
@@ -351,26 +352,83 @@ function showResultAnimation(resultKey, winner) {
       + '<circle cx="110" cy="49" r="5" fill="#F5DEB3"/><rect x="104" y="51" width="12" height="8" rx="2" fill="#EF3340" opacity="0.8"/>'
       + '<animate attributeName="opacity" dur="2.5s" repeatCount="indefinite" values="1;0.5;1"/>'
       + '</g>'
+      + '<g transform="translate(195,100) rotate(-20)">'
+      + '<animateTransform attributeName="transform" type="rotate" dur="3s" repeatCount="indefinite" values="-20 0 0;-14 0 0;-22 0 0;-20 0 0" additive="sum"/>'
+      + '<line x1="-28" y1="0" x2="4" y2="-6" stroke="#9A7040" stroke-width="3" stroke-linecap="round"/>'
+      + '<line x1="4" y1="-6" x2="26" y2="10" stroke="#9A7040" stroke-width="3" stroke-linecap="round"/>'
+      + '<line x1="4" y1="-6" x2="9" y2="-12" stroke="#7A5020" stroke-width="1.5" stroke-linecap="round"/>'
+      + '<line x1="4" y1="-6" x2="-1" y2="-12" stroke="#7A5020" stroke-width="1.5" stroke-linecap="round"/>'
+      + '<rect x="18" y="5" width="11" height="7" rx="3" fill="#5A3010" transform="rotate(40 24 9)"/>'
+      + '</g>'
       + '</svg>';
   } else {
-    // Draw - nervous shaking rowers
-    el.innerHTML = '<svg width="100%" height="100" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">'
-      + '<rect width="400" height="100" fill="#2a2a2a"/>'
-      + '<text x="200" y="20" text-anchor="middle" font-size="14" font-weight="900" fill="#FFD700" font-family="Arial,sans-serif">UAVGJORT... STRAFFER?</text>'
-      + '<text x="200" y="36" text-anchor="middle" font-size="11" fill="#aaa" font-family="Arial,sans-serif">' + nor + ' - ' + bra + '</text>'
-      // Shaking boat
-      + '<g>'
-      + '<animateTransform attributeName="transform" type="translate" dur="0.12s" repeatCount="indefinite" values="0,0;3,0;-3,0;2,0;-2,0;0,0"/>'
-      + '<ellipse cx="200" cy="72" rx="110" ry="8" fill="#C8943A"/>'
-      + '<circle cx="145" cy="62" r="5" fill="#F5DEB3"/><rect x="139" y="64" width="12" height="8" rx="2" fill="#EF3340"/>'
-      + '<circle cx="180" cy="62" r="5" fill="#F5CBA7"/><rect x="174" y="64" width="12" height="8" rx="2" fill="#EF3340"/>'
-      + '<circle cx="215" cy="62" r="5" fill="#F5DEB3"/><rect x="209" y="64" width="12" height="8" rx="2" fill="#EF3340"/>'
-      + '<circle cx="250" cy="62" r="5" fill="#8B5A2B"/><rect x="244" y="64" width="12" height="8" rx="2" fill="#EF3340"/>'
+    // Draw - nervous Norwegian supporter face, slow gentle pulse
+    el.innerHTML = '<svg width="100%" height="130" viewBox="0 0 400 130" xmlns="http://www.w3.org/2000/svg">'
+      + '<rect width="400" height="130" fill="#1a1a2e"/>'
+      // Stars background
+      + '<circle cx="30" cy="20" r="1.5" fill="white" opacity="0.4"/>'
+      + '<circle cx="80" cy="10" r="1" fill="white" opacity="0.3"/>'
+      + '<circle cx="150" cy="15" r="1.5" fill="white" opacity="0.4"/>'
+      + '<circle cx="320" cy="12" r="1" fill="white" opacity="0.3"/>'
+      + '<circle cx="370" cy="22" r="1.5" fill="white" opacity="0.4"/>'
+      // Score text
+      + '<text x="200" y="18" text-anchor="middle" font-size="13" font-weight="900" fill="#FFD700" font-family="Arial,sans-serif">UAVGJORT ' + nor + '-' + bra + ' - STRAFFER?</text>'
+      // Norwegian supporter: body in red kit
+      + '<g transform="translate(200,75)">'
+      // Slow nervous breathing - gentle scale pulse on the whole figure
+      + '<animateTransform attributeName="transform" type="scale" dur="1.8s" repeatCount="indefinite" values="1,1;1.02,1.02;1,1" additive="sum"/>'
+      // Kit body (red Norwegian jersey)
+      + '<rect x="-22" y="10" width="44" height="32" rx="5" fill="#EF3340"/>'
+      // White stripe on kit
+      + '<rect x="-22" y="22" width="44" height="4" fill="white" opacity="0.4"/>'
+      // Arms slightly raised nervously
+      + '<rect x="-38" y="12" width="17" height="10" rx="4" fill="#EF3340" transform="rotate(-15 -30 17)"/>'
+      + '<rect x="21" y="12" width="17" height="10" rx="4" fill="#EF3340" transform="rotate(15 30 17)"/>'
+      // Hands (covering mouth nervously)
+      + '<ellipse cx="-28" cy="2" rx="6" ry="5" fill="#F5DEB3" transform="rotate(-15 -28 2)"/>'
+      + '<ellipse cx="28" cy="2" rx="6" ry="5" fill="#F5DEB3" transform="rotate(15 28 2)"/>'
+      // Head
+      + '<ellipse cx="0" cy="-12" rx="18" ry="20" fill="#F5DEB3"/>'
+      // Norwegian supporter hat/beanie (red with white band)
+      + '<path d="M-17,-22 Q-16,-38 0,-40 Q16,-38 17,-22 Z" fill="#EF3340"/>'
+      + '<rect x="-17" y="-26" width="34" height="5" fill="white" rx="2"/>'
+      // Pompom on hat
+      + '<circle cx="0" cy="-41" r="5" fill="white"/>'
+      // Nervous eyes - wide open, blinking slowly
+      + '<ellipse cx="-7" cy="-14" rx="5" ry="6" fill="white"/>'
+      + '<ellipse cx="7" cy="-14" rx="5" ry="6" fill="white"/>'
+      + '<ellipse cx="-7" cy="-13" rx="3" ry="4" fill="#333"/>'
+      + '<ellipse cx="7" cy="-13" rx="3" ry="4" fill="#333"/>'
+      // Pupils darting side to side
+      + '<ellipse cx="-7" cy="-13" rx="1.5" ry="2" fill="#111">'
+      + '<animate attributeName="cx" dur="1.5s" repeatCount="indefinite" values="-8;-6;-8"/>'
+      + '</ellipse>'
+      + '<ellipse cx="7" cy="-13" rx="1.5" ry="2" fill="#111">'
+      + '<animate attributeName="cx" dur="1.5s" repeatCount="indefinite" values="6;8;6"/>'
+      + '</ellipse>'
+      // Eyelids blinking
+      + '<ellipse cx="-7" cy="-14" rx="5" ry="6" fill="#F5DEB3" opacity="0">'
+      + '<animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;0;0;0;0;0;0;1;0"/>'
+      + '</ellipse>'
+      + '<ellipse cx="7" cy="-14" rx="5" ry="6" fill="#F5DEB3" opacity="0">'
+      + '<animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0;0;0;0;0;0;0;1;0"/>'
+      + '</ellipse>'
+      // Nervous mouth (tight worried line, slight wobble)
+      + '<path d="M-8,0 Q0,2 8,0" fill="none" stroke="#a06050" stroke-width="2" stroke-linecap="round">'
+      + '<animate attributeName="d" dur="1.5s" repeatCount="indefinite" values="M-8,0 Q0,2 8,0;M-8,1 Q0,-1 8,1;M-8,0 Q0,2 8,0"/>'
+      + '</path>'
+      // Sweat drop left
+      + '<ellipse cx="-20" cy="-5" rx="3" ry="4" fill="#88ccff" opacity="0">'
+      + '<animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0;0;1;0;0"/>'
+      + '<animate attributeName="cy" dur="2s" repeatCount="indefinite" values="-5;-5;2;8;8"/>'
+      + '</ellipse>'
+      // Sweat drop right
+      + '<ellipse cx="22" cy="-8" rx="3" ry="4" fill="#88ccff" opacity="0">'
+      + '<animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0;1;0;0;0" begin="1s"/>'
+      + '<animate attributeName="cy" dur="2s" repeatCount="indefinite" values="-8;-1;5;5;5" begin="1s"/>'
+      + '</ellipse>'
       + '</g>'
-      // Sweat drops
-      + '<text x="130" y="58" font-size="11" fill="#88aaff"><animate attributeName="opacity" dur="0.9s" repeatCount="indefinite" values="0;1;0"/></text>'
-      + '<text x="270" y="55" font-size="11" fill="#88aaff"><animate attributeName="opacity" dur="1.1s" repeatCount="indefinite" values="1;0;1"/></text>'
-      + '<text x="200" y="92" text-anchor="middle" font-size="10" fill="#777" font-family="Arial,sans-serif">Venter pa resultat...</text>'
+      + '<text x="200" y="122" text-anchor="middle" font-size="10" fill="#666" font-family="Arial,sans-serif">Venter pa straffer...</text>'
       + '</svg>';
   }
 }
@@ -459,16 +517,17 @@ window.showPlayerDetail = function(name) {
     ['Haaland scorer', entry.q2],
     ['Far Norge straffe', entry.q_penalty],
     ['Resultat (full tid)', entry.q3],
-    ['Mal 1. omgang', entry.q4],
+    ['Mål 1. omgang', entry.q4],
     ['Gule kort', entry.q5],
-    ['Rodt kort', entry.q8],
+    ['Rødt kort', entry.q8],
+    ['VM 1998 nevnt', entry.q14],
     ['"Ro" nevnt', entry.q6],
-    ['Kampens 1. mal', entry.q7 === '0' ? 'Ingen mal' : (entry.q7 ? entry.q7+'-'+(parseInt(entry.q7)+9)+' min' : '-')],
+    ['Kampens 1. mal', entry.q7 === '0' ? 'Ingen mål' : (entry.q7 ? entry.q7+'-'+(parseInt(entry.q7)+9)+' min' : '-')],
     ['Frispark', entry.q10],
     ['Flo-pasninger (langpasninger)', entry.q11],
     ['Corners', entry.q9],
     ['Innkast', entry.q12],
-    ['Skudd pa mal', entry.q13],
+    ['Skudd på mål', entry.q13],
     ['Poeng', entry.pts + ' pts'],
   ];
   body.innerHTML = rows.map(function(r) {
